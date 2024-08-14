@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, ActivityIndicator, Platform, StatusBar, Modal, TextInput, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, ActivityIndicator, Platform, StatusBar, Modal, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons'; // Certifique-se de que o pacote @expo/vector-icons está instalado
+import { useApi } from '@/app/context/ApiContext';
 
-const HomeScreen = () => {
+const LoginScreen = ({ setAuthenticated, setToken }) => {
     const [loading, setLoading] = useState(true);
-    const [apiUrl, setApiUrl] = useState('');
     const [modalVisible, setModalVisible] = useState(true);
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-    const [connectionMessage, setConnectionMessage] = useState('');
-    const [connectionSuccess, setConnectionSuccess] = useState(null); // Estado para rastrear o sucesso da conexão
+    const [messageModalVisible, setMessageModalVisible] = useState(false);
+    const [message, setMessage] = useState('');
+    const [connectionSuccess, setConnectionSuccess] = useState(null); // Novo estado para rastrear o sucesso da conexão
+    const { apiUrl, setApiUrl } = useApi();  // Usando o contexto
 
     useEffect(() => {
         if (apiUrl) {
@@ -28,12 +30,38 @@ const HomeScreen = () => {
                 }
             });
             console.log('Sucesso');
-            setConnectionMessage('Conexão com a API foi bem-sucedida!');
             setConnectionSuccess(true);
+            setMessage('Conexão com a API foi bem-sucedida!');
         } catch (error) {
             console.error('Erro ao conectar-se à API:', error);
-            setConnectionMessage('Falha ao conectar-se à API.');
             setConnectionSuccess(false);
+            setMessage('Falha ao conectar-se à API.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleLogin = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post(`${apiUrl}/api/login`, {
+                login: login,
+                password: password
+            });
+            const { access_token } = response.data;
+            console.log('Login bem-sucedido. Token:', access_token);
+
+            setToken(access_token); // Armazena o token
+            setAuthenticated(true); // Define o usuário como autenticado
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.message === "Invalid login details") {
+                setMessage('Login ou senha incorretos. Tente novamente.');
+            } else if (error.request) {
+                setMessage('Nenhuma resposta da API. Verifique sua conexão ou o URL da API.');
+            } else {
+                setMessage('API response: ' + error.response.data.message);
+            }
+            setMessageModalVisible(true); // Mostra o modal de mensagem
         } finally {
             setLoading(false);
         }
@@ -62,12 +90,28 @@ const HomeScreen = () => {
                 </View>
             </Modal>
 
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={messageModalVisible}
+                onRequestClose={() => setMessageModalVisible(false)}
+            >
+                <View style={styles.modalBackground}>
+                    <View style={styles.enhancedModalContainer}>
+                        <Text style={styles.enhancedModalMessage}>{message}</Text>
+                        <TouchableOpacity onPress={() => setMessageModalVisible(false)} style={styles.enhancedOkButton}>
+                            <Text style={styles.enhancedOkButtonText}>OK</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
                 <View style={styles.loginContainer}>
-                    {connectionMessage ? (
-                        <View style={styles.connectionMessageContainer}>
+                    {message && (
+                        <View style={[styles.connectionMessageContainer, { flexDirection: 'row', alignItems: 'center', marginBottom: 15 }]}>
                             <Ionicons
                                 name={connectionSuccess ? "checkmark-circle" : "close-circle"}
                                 size={24}
@@ -76,13 +120,14 @@ const HomeScreen = () => {
                             <Text
                                 style={[
                                     styles.connectionMessage,
-                                    { color: connectionSuccess ? "green" : "red" }
+                                    { color: connectionSuccess ? "green" : "red", marginLeft: 8, flex: 1, marginTop:10 }
                                 ]}
                             >
-                                {connectionMessage}
+                                {message}
                             </Text>
                         </View>
-                    ) : null}
+
+                    )}
                     <TextInput
                         style={styles.input}
                         placeholder="Login"
@@ -96,14 +141,19 @@ const HomeScreen = () => {
                         value={password}
                         onChangeText={setPassword}
                     />
-                    <TouchableOpacity style={styles.loginButton}>
-                        <Text style={styles.loginButtonText}>Entrar</Text>
+                    <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                            <Ionicons name="log-in-outline" size={20} color="white" />
+                            <Text style={[styles.loginButtonText, { marginLeft: 8 }]}>Entrar</Text>
+                        </View>
                     </TouchableOpacity>
                 </View>
             )}
         </SafeAreaView>
     );
 };
+
+
 
 const styles = StyleSheet.create({
     container: {
@@ -149,15 +199,6 @@ const styles = StyleSheet.create({
         elevation: 3,
         margin: 20,
     },
-    connectionMessageContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 15,
-    },
-    connectionMessage: {
-        fontSize: 18,
-        marginLeft: 10,
-    },
     loginButton: {
         marginTop: 20,
         backgroundColor: '#007BFF',
@@ -169,6 +210,34 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
     },
+    connectionMessage: {
+        fontSize: 18,
+        marginBottom: 15,
+        color: 'green',
+    },
+    enhancedModalContainer: {
+        width: 300,
+        padding: 30,  // Increased padding for more space
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    enhancedModalMessage: {
+        fontSize: 18,  // Increased font size
+        textAlign: 'center',
+        marginBottom: 25,  // Added more space below the message
+    },
+    enhancedOkButton: {
+        backgroundColor: '#007BFF',
+        padding: 12,  // Increased padding for the button
+        borderRadius: 5,
+        alignItems: 'center',
+        width: '100%',  // Make the button full width of the modal
+    },
+    enhancedOkButtonText: {
+        color: '#fff',
+        fontSize: 18,  // Increased font size for the button text
+    },
 });
 
-export default HomeScreen;
+export default LoginScreen;
