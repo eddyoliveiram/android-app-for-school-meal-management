@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SchoolController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\PostController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/posts', [PostController::class, 'index']);
+Route::apiResource('schools', SchoolController::class);
 
 Route::middleware(['auth:sanctum','admin'])->group(function () {
     Route::post('/posts', [PostController::class, 'store']);
