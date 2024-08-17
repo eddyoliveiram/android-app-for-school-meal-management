@@ -50,9 +50,30 @@ class ItemSeeder extends Seeder
         ]);
 
         Item::create([
+            'category_id' => $NaoPerecivelId,
+            'quantity' => rand(9,50),
+            'supplier' => 'Café 1kg',
+            'received_at' => '2024-08-19'
+        ]);
+
+        Item::create([
             'category_id' => $ProteinasId,
             'quantity' => rand(9,50),
             'supplier' => 'Peito de Frango 1kg',
+            'received_at' => '2024-08-19'
+        ]);
+
+        Item::create([
+            'category_id' => $ProcessadosId,
+            'quantity' => rand(9,50),
+            'supplier' => 'Biscoito Waffer 165g',
+            'received_at' => '2024-08-19'
+        ]);
+
+        Item::create([
+            'category_id' => $ProcessadosId,
+            'quantity' => rand(9,50),
+            'supplier' => 'Guaraná 2l',
             'received_at' => '2024-08-19'
         ]);
     }

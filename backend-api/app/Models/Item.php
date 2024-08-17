@@ -22,5 +22,11 @@ class Item extends Model
             ->withPivot('quantity_received', 'quantity_consumed', 'received_at')
             ->withTimestamps();
     }
+
+    public function dailyRecords()
+    {
+        return $this->belongsToMany(DailyRecord::class, 'daily_record_item')
+            ->withTimestamps();
+    }
 }
 

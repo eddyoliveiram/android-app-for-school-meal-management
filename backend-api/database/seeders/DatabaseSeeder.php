@@ -18,7 +18,9 @@ class DatabaseSeeder extends Seeder
             SchoolSeeder::class,
             CategorySeeder::class,
             ItemSeeder::class,
-            SchoolItemSeeder::class
+            SchoolItemSeeder::class,
+            DailyRecordSeeder::class,
+            DailyRecordItemSeeder::class
         ]);
     }
 }

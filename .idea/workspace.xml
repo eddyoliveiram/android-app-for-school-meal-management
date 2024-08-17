@@ -6,9 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="b6cfcbfd-bf34-48be-ac71-f0cc025c2098" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend-api/app/Http/Controllers/SchoolController.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend-api/app/Http/Controllers/SchoolController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend-api/app/Models/School.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend-api/app/Models/School.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-api/app/Models/Item.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend-api/app/Models/Item.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend-api/database/seeders/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend-api/database/seeders/DatabaseSeeder.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-api/database/seeders/ItemSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend-api/database/seeders/ItemSeeder.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend-api/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend-api/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -192,7 +192,7 @@
       <updated>1723861806479</updated>
       <workItem from="1723861807305" duration="2598000" />
       <workItem from="1723907013391" duration="3327000" />
-      <workItem from="1723910414934" duration="3508000" />
+      <workItem from="1723910414934" duration="6980000" />
     </task>
     <servers />
   </component>
