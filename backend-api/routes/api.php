@@ -17,16 +17,24 @@ use App\Http\Controllers\PostController;
 */
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/posts', [PostController::class, 'index']);
-Route::apiResource('schools', SchoolController::class);
+
+Route::get('schools', [SchoolController::class, 'index'])->name('schools.index');
+Route::post('schools', [SchoolController::class, 'store'])->name('schools.store');
+Route::get('schools/{school}', [SchoolController::class, 'show'])->name('schools.show');
+Route::put('schools/{school}', [SchoolController::class, 'update'])->name('schools.update');
+Route::patch('schools/{school}', [SchoolController::class, 'update'])->name('schools.update');
+Route::delete('schools/{school}', [SchoolController::class, 'destroy'])->name('schools.destroy');
+
+Route::post('schools/{school}/register-item', [SchoolController::class, 'registerItem'])->name('schools.register-item');
+Route::patch('schools/{school}/items/{item}/consume-item', [SchoolController::class, 'updateItemConsumption'])->name('schools.consume-item');
+Route::get('schools/{school}/items', [SchoolController::class, 'getItems'])->name('schools.items');
 
 Route::middleware(['auth:sanctum','admin'])->group(function () {
-    Route::post('/posts', [PostController::class, 'store']);
-    Route::put('/posts/{id}', [PostController::class, 'update']);
-    Route::delete('/posts/{id}', [PostController::class, 'destroy']);
+//    Route::post('/posts', [PostController::class, 'store']);
+//    Route::put('/posts/{id}', [PostController::class, 'update']);
+//    Route::delete('/posts/{id}', [PostController::class, 'destroy']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
-
-    Route::get('/posts/{id}', [PostController::class, 'show']);
+//    Route::get('/posts/{id}', [PostController::class, 'show']);
 });

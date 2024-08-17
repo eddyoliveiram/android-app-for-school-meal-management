@@ -5,16 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class School extends Model
+class Item extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'address', 'number_of_students'];
+    protected $fillable = ['type', 'quantity', 'supplier', 'received_at'];
 
-    public function items()
+    public function category()
     {
-        return $this->belongsToMany(Item::class)
+        return $this->belongsTo(Category::class);
+    }
+
+    public function schools()
+    {
+        return $this->belongsToMany(School::class)
             ->withPivot('quantity_received', 'quantity_consumed', 'received_at')
             ->withTimestamps();
     }
 }
+

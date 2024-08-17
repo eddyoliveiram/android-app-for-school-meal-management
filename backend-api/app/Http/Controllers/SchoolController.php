@@ -65,4 +65,44 @@ class SchoolController extends Controller
 
         return response()->json(['error' => 'School not found'], 404);
     }
+
+    public function registerItem(Request $request, $schoolId)
+    {
+        $validated = $request->validate([
+            'item_id' => 'required|exists:items,id',
+            'quantity_received' => 'required|integer|min:1',
+            'received_at' => 'required|date',
+        ]);
+
+        $school = School::findOrFail($schoolId);
+
+        $school->items()->attach($validated['item_id'], [
+            'quantity_received' => $validated['quantity_received'],
+            'received_at' => $validated['received_at'],
+        ]);
+
+        return response()->json(['message' => 'Item registered with success.'], 201);
+    }
+
+    public function updateItemConsumption(Request $request, $schoolId, $itemId)
+    {
+        $validated = $request->validate([
+            'quantity_consumed' => 'required|integer|min:1',
+        ]);
+
+        $school = School::findOrFail($schoolId);
+
+        $school->items()->updateExistingPivot($itemId, [
+            'quantity_consumed' => $validated['quantity_consumed'],
+        ]);
+
+        return response()->json(['message' => 'Inventory updated with success.'], 200);
+    }
+
+    public function getItems($schoolId)
+    {
+        $school = School::with('items')->findOrFail($schoolId);
+        return response()->json($school->items, 200);
+    }
+
 }
