@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, ActivityIndicator, Platform, StatusBar, Modal, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, ActivityIndicator, Platform, StatusBar, Modal, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons'; // Certifique-se de que o pacote @expo/vector-icons está instalado
 import { useApi } from '@/app/context/ApiContext';
@@ -11,12 +11,12 @@ const LoginScreen = ({ setAuthenticated, setToken }) => {
     const [password, setPassword] = useState('');
     const [messageModalVisible, setMessageModalVisible] = useState(false);
     const [message, setMessage] = useState('');
-    const [connectionSuccess, setConnectionSuccess] = useState(null); // Novo estado para rastrear o sucesso da conexão
-    const { apiUrl, setApiUrl } = useApi();  // Usando o contexto
+    const [connectionSuccess, setConnectionSuccess] = useState(null);
+    const { apiUrl, setApiUrl } = useApi();
 
     useEffect(() => {
         if (apiUrl) {
-            setModalVisible(false); // Fecha o modal assim que o URL é informado
+            setModalVisible(false);
             testApiConnection();
         }
     }, [apiUrl]);
@@ -29,11 +29,9 @@ const LoginScreen = ({ setAuthenticated, setToken }) => {
                     'ngrok-skip-browser-warning': 'true'
                 }
             });
-            console.log('Sucesso');
             setConnectionSuccess(true);
             setMessage('Conexão com a API foi bem-sucedida!');
         } catch (error) {
-            console.error('Erro ao conectar-se à API:', error);
             setConnectionSuccess(false);
             setMessage('Falha ao conectar-se à API.');
         } finally {
@@ -49,22 +47,23 @@ const LoginScreen = ({ setAuthenticated, setToken }) => {
                 password: password
             });
             const { access_token } = response.data;
-            console.log('Login bem-sucedido. Token:', access_token);
-
-            setToken(access_token); // Armazena o token
-            setAuthenticated(true); // Define o usuário como autenticado
+            setToken(access_token);
+            setAuthenticated(true);
         } catch (error) {
-            if (error.response && error.response.data && error.response.data.message === "Invalid login details") {
+            setMessageModalVisible(true);
+            if (error.response && error.response.data.message === "Invalid login details") {
                 setMessage('Login ou senha incorretos. Tente novamente.');
-            } else if (error.request) {
-                setMessage('Nenhuma resposta da API. Verifique sua conexão ou o URL da API.');
             } else {
-                setMessage('API response: ' + error.response.data.message);
+                setMessage('Erro ao conectar-se à API.');
             }
-            setMessageModalVisible(true); // Mostra o modal de mensagem
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleDevelopmentFeature = (feature) => {
+        setMessage(`${feature} está em desenvolvimento!`);
+        setMessageModalVisible(true);
     };
 
     return (
@@ -85,6 +84,7 @@ const LoginScreen = ({ setAuthenticated, setToken }) => {
                             placeholder="https://exemplo.com"
                             value={apiUrl}
                             onChangeText={(text) => setApiUrl(text)}
+                            placeholderTextColor="#6e6e6e" // Placeholder em cinza mais escuro
                         />
                     </View>
                 </View>
@@ -109,52 +109,54 @@ const LoginScreen = ({ setAuthenticated, setToken }) => {
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
-                <View style={styles.loginContainer}>
-                    {message && (
-                        <View style={[styles.connectionMessageContainer, { flexDirection: 'row', alignItems: 'center', marginBottom: 15 }]}>
-                            <Ionicons
-                                name={connectionSuccess ? "checkmark-circle" : "close-circle"}
-                                size={24}
-                                color={connectionSuccess ? "green" : "red"}
-                            />
-                            <Text
-                                style={[
-                                    styles.connectionMessage,
-                                    { color: connectionSuccess ? "green" : "red", marginLeft: 8, flex: 1, marginTop:10 }
-                                ]}
-                            >
-                                {message}
-                            </Text>
-                        </View>
+                <View style={styles.loginFormContainer}>
+                    <Image source={require('@/assets/logo.png')} style={styles.logo} />
+                    <Text style={styles.appName}>Merenda SP</Text>
+                    <Text style={styles.slogan}>Plataforma de controle de merenda escolar.</Text>
 
-                    )}
+                    <Text style={styles.label}>Login</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Login"
+                        placeholder="Digite seu login"
                         value={login}
                         onChangeText={setLogin}
+                        placeholderTextColor="#b3b3b3" // Placeholder em cinza mais escuro
                     />
+
+                    {/* Label de Senha */}
+                    <Text style={styles.label}>Senha</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Senha"
+                        placeholder="Digite sua senha"
                         secureTextEntry={true}
                         value={password}
                         onChangeText={setPassword}
+                        placeholderTextColor="#b3b3b3" // Placeholder em cinza mais escuro
                     />
+
                     <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                             <Ionicons name="log-in-outline" size={20} color="white" />
                             <Text style={[styles.loginButtonText, { marginLeft: 8 }]}>Entrar</Text>
                         </View>
                     </TouchableOpacity>
+
+                    {/* Frase clicável "Não lembro minha senha" */}
+                    <TouchableOpacity onPress={() => handleDevelopmentFeature('Recuperar senha')} style={styles.forgotPassword}>
+                        <Text style={styles.forgotPasswordText}>Não lembro minha senha</Text>
+                    </TouchableOpacity>
+
+                    {/* Frase clicável "Criar conta" no canto inferior direito */}
+                    <View style={styles.createAccountContainer}>
+                        <TouchableOpacity onPress={() => handleDevelopmentFeature('Criar conta')}>
+                            <Text style={styles.createAccountText}>Criar conta</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             )}
         </SafeAreaView>
     );
 };
-
-
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -181,63 +183,103 @@ const styles = StyleSheet.create({
     },
     input: {
         width: '100%',
-        height: 40,
-        borderColor: '#ccc',
+        height: 50,
+        borderColor: '#f0f0f0',
         borderWidth: 1,
         borderRadius: 5,
         paddingHorizontal: 10,
         marginBottom: 15,
+        backgroundColor: '#f0f0f0',
+        fontWeight: 'bold',
     },
-    loginContainer: {
-        padding: 20,
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        elevation: 3,
-        margin: 20,
+    loginFormContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        paddingHorizontal: 20,
+    },
+    logo: {
+        width: 150,
+        height: 150,
+        alignSelf: 'center',
+        marginBottom: 5, // Reduzido para aproximar os textos da logo
+    },
+    appName: {
+        fontSize: 22,
+        color: '#00b33c',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 2, // Espaçamento menor entre o appName e o slogan
+    },
+    slogan: {
+        fontSize: 12,
+        color: '#666666',
+        textAlign: 'center',
+        marginBottom: 20, // Espaço para separar o slogan do formulário
+    },
+    formSpacing: {
+        marginTop: 20, // Adiciona uma margem antes do formulário
+    },
+    label: {
+        color: '#666666',
+        fontSize: 14,
+        marginBottom: 5,
     },
     loginButton: {
         marginTop: 20,
-        backgroundColor: '#007BFF',
-        padding: 10,
+        backgroundColor: '#00b33c',
+        padding: 12,
         borderRadius: 5,
         alignItems: 'center',
     },
     loginButtonText: {
         color: '#fff',
         fontSize: 16,
+        fontWeight: 'bold'
     },
-    connectionMessage: {
-        fontSize: 18,
-        marginBottom: 15,
-        color: 'green',
+    forgotPassword: {
+        marginTop: 20,
+        alignSelf: 'center',
+    },
+    forgotPasswordText: {
+        color: '#00b33c',
+        fontSize: 14,
+        fontWeight: 'bold'
+    },
+    createAccountContainer: {
+        position: 'absolute',
+        bottom: 30,
+        right: 20,
+    },
+    createAccountText: {
+        color: '#00b33c',
+        fontSize: 14,
+        fontWeight: 'bold'
+        // textDecorationLine: 'underline',
     },
     enhancedModalContainer: {
         width: 300,
-        padding: 30,  // Increased padding for more space
+        padding: 30,
         backgroundColor: '#fff',
         borderRadius: 10,
         alignItems: 'center',
     },
     enhancedModalMessage: {
-        fontSize: 18,  // Increased font size
+        fontSize: 18,
         textAlign: 'center',
-        marginBottom: 25,  // Added more space below the message
+        marginBottom: 25,
     },
     enhancedOkButton: {
-        backgroundColor: '#007BFF',
-        padding: 12,  // Increased padding for the button
+        backgroundColor: '#00b33c',
+        padding: 12,
         borderRadius: 5,
         alignItems: 'center',
-        width: '100%',  // Make the button full width of the modal
+        width: '100%',
     },
     enhancedOkButtonText: {
         color: '#fff',
-        fontSize: 18,  // Increased font size for the button text
+        fontSize: 18,
     },
 });
+
 
 export default LoginScreen;
