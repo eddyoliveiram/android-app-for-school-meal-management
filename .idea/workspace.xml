@@ -155,8 +155,9 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.laravel-idea.search-composer-json": "true",
+    "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/my-projects/react-native-app/mobile-app/assets",
+    "last_opened_file_path": "//wsl$/Ubuntu/home/eddy/projects/api-carnes-parcelados",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -196,7 +197,9 @@
       <workItem from="1723907013391" duration="3327000" />
       <workItem from="1723910414934" duration="7326000" />
       <workItem from="1724005861251" duration="7000" />
-      <workItem from="1724008915741" duration="3124000" />
+      <workItem from="1724008915741" duration="4698000" />
+      <workItem from="1724103558720" duration="628000" />
+      <workItem from="1724293199721" duration="2274000" />
     </task>
     <servers />
   </component>

@@ -35,6 +35,7 @@ const LoginScreen = ({ setAuthenticated, setToken }) => {
             setConnectionSuccess(false);
             setMessage('Falha ao conectar-se à API.');
         } finally {
+            console.log(apiUrl)
             setLoading(false);
         }
     };
