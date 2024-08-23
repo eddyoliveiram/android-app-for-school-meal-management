@@ -1,96 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, ActivityIndicator, Platform, StatusBar, Modal, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
-import axios from 'axios';
-import { Ionicons } from '@expo/vector-icons'; // Certifique-se de que o pacote @expo/vector-icons está instalado
-import { useApi } from '@/app/context/ApiContext';
+import React, { useState } from 'react';
+import { SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Modal, StatusBar, Image, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import LoadingScreen from './LoadingScreen';
 
-const LoginScreen = ({ setAuthenticated, setToken }) => {
-    const [loading, setLoading] = useState(true);
-    const [modalVisible, setModalVisible] = useState(true);
+const LoginScreen = ({ setAuthenticated }) => {
+    const [loading, setLoading] = useState(false);
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-    const [messageModalVisible, setMessageModalVisible] = useState(false);
     const [message, setMessage] = useState('');
-    const [connectionSuccess, setConnectionSuccess] = useState(null);
-    const { apiUrl, setApiUrl } = useApi();
-
-    useEffect(() => {
-        if (apiUrl) {
-            setModalVisible(false);
-            testApiConnection();
-        }
-    }, [apiUrl]);
-
-    const testApiConnection = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.get(`${apiUrl}/api/posts`, {
-                headers: {
-                    'ngrok-skip-browser-warning': 'true'
-                }
-            });
-            setConnectionSuccess(true);
-            setMessage('Conexão com a API foi bem-sucedida!');
-        } catch (error) {
-            setConnectionSuccess(false);
-            setMessage('Falha ao conectar-se à API.');
-        } finally {
-            console.log(apiUrl)
-            setLoading(false);
-        }
-    };
+    const [messageModalVisible, setMessageModalVisible] = useState(false);
 
     const handleLogin = async () => {
         setLoading(true);
         try {
-            const response = await axios.post(`${apiUrl}/api/login`, {
-                login: login,
-                password: password
-            });
-            const { access_token } = response.data;
-            setToken(access_token);
-            setAuthenticated(true);
+            // Simulação de login (trocar por API)
+            setTimeout(() => {
+                setAuthenticated(true);
+                setLoading(false);
+            }, 2000);
         } catch (error) {
+            setMessage('Erro ao fazer login');
             setMessageModalVisible(true);
-            if (error.response && error.response.data.message === "Invalid login details") {
-                setMessage('Login ou senha incorretos. Tente novamente.');
-            } else {
-                setMessage('Erro ao conectar-se à API.');
-            }
-        } finally {
             setLoading(false);
         }
     };
 
-    const handleDevelopmentFeature = (feature) => {
-        setMessage(`${feature} está em desenvolvimento!`);
-        setMessageModalVisible(true);
+    const handleSkipLogin = () => {
+        setLoading(true);
+        setTimeout(() => {
+            setAuthenticated(true);
+            setLoading(false);
+        }, 2000);
     };
+
+    if (loading) return <LoadingScreen />;
 
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#f8f8f8" />
 
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.modalBackground}>
-                    <View style={styles.modalContainer}>
-                        <Text style={styles.modalTitle}>Insira o URL da API</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="https://exemplo.com"
-                            value={apiUrl}
-                            onChangeText={(text) => setApiUrl(text)}
-                            placeholderTextColor="#6e6e6e" // Placeholder em cinza mais escuro
-                        />
-                    </View>
-                </View>
-            </Modal>
-
+            {/* Modal de mensagem */}
             <Modal
                 animationType="fade"
                 transparent={true}
@@ -98,77 +47,80 @@ const LoginScreen = ({ setAuthenticated, setToken }) => {
                 onRequestClose={() => setMessageModalVisible(false)}
             >
                 <View style={styles.modalBackground}>
-                    <View style={styles.enhancedModalContainer}>
-                        <Text style={styles.enhancedModalMessage}>{message}</Text>
-                        <TouchableOpacity onPress={() => setMessageModalVisible(false)} style={styles.enhancedOkButton}>
-                            <Text style={styles.enhancedOkButtonText}>OK</Text>
+                    <View style={styles.modalContainer}>
+                        <Text>{message}</Text>
+                        <TouchableOpacity onPress={() => setMessageModalVisible(false)} style={styles.okButton}>
+                            <Text style={{ color: '#fff' }}>OK</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </Modal>
 
-            {loading ? (
-                <ActivityIndicator size="large" color="#0000ff" />
-            ) : (
-                <View style={styles.loginFormContainer}>
-                    <Image source={require('@/assets/logo.png')} style={styles.logo} />
-                    <Text style={styles.appName}>Merenda SP</Text>
-                    <Text style={styles.slogan}>Plataforma de controle de merenda escolar.</Text>
+            {/* Layout com KeyboardAvoidingView e ScrollView */}
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            >
+                <ScrollView
+                    contentContainerStyle={styles.scrollViewContent}
+                    keyboardShouldPersistTaps="handled"
+                >
+                    <View style={styles.formContainer}>
+                        <Image source={require('../assets/logo.png')} style={styles.logo} />
+                        <Text style={styles.title}>Merenda SP</Text>
 
-                    <Text style={styles.label}>Login</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Digite seu login"
-                        value={login}
-                        onChangeText={setLogin}
-                        placeholderTextColor="#b3b3b3" // Placeholder em cinza mais escuro
-                    />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Login"
+                            placeholderTextColor="#b3b3b3"
+                            value={login}
+                            onChangeText={setLogin}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Senha"
+                            placeholderTextColor="#b3b3b3"
+                            secureTextEntry={true}
+                            value={password}
+                            onChangeText={setPassword}
+                        />
 
-                    {/* Label de Senha */}
-                    <Text style={styles.label}>Senha</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Digite sua senha"
-                        secureTextEntry={true}
-                        value={password}
-                        onChangeText={setPassword}
-                        placeholderTextColor="#b3b3b3" // Placeholder em cinza mais escuro
-                    />
-
-                    <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
                             <Ionicons name="log-in-outline" size={20} color="white" />
-                            <Text style={[styles.loginButtonText, { marginLeft: 8 }]}>Entrar</Text>
-                        </View>
-                    </TouchableOpacity>
+                            <Text style={styles.loginButtonText}>Entrar</Text>
+                        </TouchableOpacity>
 
-                    {/* Frase clicável "Não lembro minha senha" */}
-                    <TouchableOpacity onPress={() => handleDevelopmentFeature('Recuperar senha')} style={styles.forgotPassword}>
-                        <Text style={styles.forgotPasswordText}>Não lembro minha senha</Text>
-                    </TouchableOpacity>
-
-                    {/* Frase clicável "Criar conta" no canto inferior direito */}
-                    <View style={styles.createAccountContainer}>
-                        <TouchableOpacity onPress={() => handleDevelopmentFeature('Criar conta')}>
-                            <Text style={styles.createAccountText}>Criar conta</Text>
+                        <TouchableOpacity style={styles.skipButton} onPress={handleSkipLogin}>
+                            <Text style={styles.skipButtonText}>Pular Login</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
-            )}
+                </ScrollView>
+            </KeyboardAvoidingView>
+
+            {/* Botão "Criar Conta" fixo no canto inferior */}
+            <View style={styles.bottomContainer}>
+                <TouchableOpacity style={styles.createAccountButton}>
+                    <Text style={styles.createAccountText}>Criar Conta</Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 };
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
         backgroundColor: '#f8f8f8',
+    },
+    scrollViewContent: {
+        flexGrow: 1,
+        justifyContent: 'center', // Centraliza o conteúdo quando o teclado não está ativo
     },
     modalBackground: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0,0,0,0.5)',
     },
     modalContainer: {
         width: 300,
@@ -177,10 +129,28 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
     },
-    modalTitle: {
-        fontSize: 18,
+    okButton: {
+        backgroundColor: '#00b33c',
+        padding: 10,
+        marginTop: 20,
+        borderRadius: 5,
+    },
+    formContainer: {
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+    },
+    logo: {
+        width: 150,
+        height: 150,
+        marginBottom: 20,
+    },
+    title: {
+        fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 15,
+        marginBottom: 20,
+        textAlign: 'center',
     },
     input: {
         width: '100%',
@@ -191,96 +161,38 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginBottom: 15,
         backgroundColor: '#f0f0f0',
-        fontWeight: 'bold',
-    },
-    loginFormContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        paddingHorizontal: 20,
-    },
-    logo: {
-        width: 150,
-        height: 150,
-        alignSelf: 'center',
-        marginBottom: 5, // Reduzido para aproximar os textos da logo
-    },
-    appName: {
-        fontSize: 22,
-        color: '#00b33c',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 2, // Espaçamento menor entre o appName e o slogan
-    },
-    slogan: {
-        fontSize: 12,
-        color: '#666666',
-        textAlign: 'center',
-        marginBottom: 20, // Espaço para separar o slogan do formulário
-    },
-    formSpacing: {
-        marginTop: 20, // Adiciona uma margem antes do formulário
-    },
-    label: {
-        color: '#666666',
-        fontSize: 14,
-        marginBottom: 5,
     },
     loginButton: {
-        marginTop: 20,
         backgroundColor: '#00b33c',
-        padding: 12,
+        padding: 15,
         borderRadius: 5,
         alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        width: '100%',
     },
     loginButtonText: {
         color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold'
+        marginLeft: 10,
+        fontSize: 18,
     },
-    forgotPassword: {
-        marginTop: 20,
-        alignSelf: 'center',
+    skipButton: {
+        marginTop: 10,
+        alignItems: 'center',
     },
-    forgotPasswordText: {
+    skipButtonText: {
         color: '#00b33c',
-        fontSize: 14,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
-    createAccountContainer: {
+    bottomContainer: {
         position: 'absolute',
-        bottom: 30,
         right: 20,
+        bottom: 20,
     },
     createAccountText: {
         color: '#00b33c',
-        fontSize: 14,
-        fontWeight: 'bold'
-        // textDecorationLine: 'underline',
-    },
-    enhancedModalContainer: {
-        width: 300,
-        padding: 30,
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        alignItems: 'center',
-    },
-    enhancedModalMessage: {
-        fontSize: 18,
-        textAlign: 'center',
-        marginBottom: 25,
-    },
-    enhancedOkButton: {
-        backgroundColor: '#00b33c',
-        padding: 12,
-        borderRadius: 5,
-        alignItems: 'center',
-        width: '100%',
-    },
-    enhancedOkButtonText: {
-        color: '#fff',
-        fontSize: 18,
+        fontWeight: 'bold',
     },
 });
-
 
 export default LoginScreen;

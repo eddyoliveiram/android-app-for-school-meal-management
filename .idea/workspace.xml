@@ -16,6 +16,13 @@
     <pharConfigPath>$PROJECT_DIR$/backend-api/composer.json</pharConfigPath>
     <execution />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript JSX File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -157,7 +164,7 @@
     "RunOnceActivity.laravel-idea.search-composer-json": "true",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "//wsl$/Ubuntu/home/eddy/projects/api-carnes-parcelados",
+    "last_opened_file_path": "C:/Users/my-projects/react-native-app/mobile-app/assets/images",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -169,6 +176,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\my-projects\react-native-app\mobile-app\assets\images" />
       <recent name="C:\Users\my-projects\react-native-app\mobile-app\assets" />
     </key>
   </component>
@@ -199,7 +207,8 @@
       <workItem from="1724005861251" duration="7000" />
       <workItem from="1724008915741" duration="4698000" />
       <workItem from="1724103558720" duration="628000" />
-      <workItem from="1724293199721" duration="2274000" />
+      <workItem from="1724293199721" duration="3267000" />
+      <workItem from="1724371868949" duration="9110000" />
     </task>
     <servers />
   </component>

@@ -1,24 +1,30 @@
-import React, { useState } from 'react';
-import { ApiProvider } from '@/app/context/ApiContext';
-import WelcomeScreen from '@/components/WelcomeScreen';
+import React, { useState, useEffect } from 'react';
+import LoadingScreen from '@/components/LoadingScreen';
 import LoginScreen from '@/components/LoginScreen';
+import MainTabs from '@/components/MainTabs';
 
-export default function MainScreen() {
-    const [authenticated, setAuthenticated] = useState(false);
-    const [token, setToken] = useState(null);  // Armazena o token
+export default function App() {
+    const [isLoading, setIsLoading] = useState(true);
+    const [isAuthenticated, setAuthenticated] = useState(false);
 
-    const handleLogout = () => {
-        setAuthenticated(false);
-        setToken(null); // Limpa o token ao fazer logout
-    };
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 2000); // Simula um carregamento de 2 segundos
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (isLoading) {
+        return <LoadingScreen />;
+    }
 
     return (
-        <ApiProvider>
-            {!authenticated ? (
-                <LoginScreen setAuthenticated={setAuthenticated} setToken={setToken} />
+        <>
+            {isAuthenticated ? (
+                <MainTabs handleLogout={() => setAuthenticated(false)} />
             ) : (
-                <WelcomeScreen token={token} logout={handleLogout} />
+                <LoginScreen setAuthenticated={setAuthenticated} />
             )}
-        </ApiProvider>
+        </>
     );
 }
