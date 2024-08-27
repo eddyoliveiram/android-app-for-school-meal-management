@@ -6,22 +6,22 @@ import { Ionicons } from '@expo/vector-icons'; // ou 'react-native-vector-icons/
 import LoginScreen from '@/components/LoginScreen';
 
 // Função de logout na HomeScreen
-function HomeScreen({ handleLogout }) {
-    return (
-        <View style={styles.centered}>
-            <Text>Bem-vindo!</Text>
-            <Button title="Logout" onPress={handleLogout} /> {/* Botão de logout */}
-        </View>
-    );
-}
-
-function ProfileScreen() {
-    return (
-        <View style={styles.centered}>
-            <Text>Perfil</Text>
-        </View>
-    );
-}
+// function HomeScreen({ handleLogout }) {
+//     return (
+//         <View style={styles.centered}>
+//             <Text>Bem-vindo!</Text>
+//             <Button title="Logout" onPress={handleLogout} /> {/* Botão de logout */}
+//         </View>
+//     );
+// }
+//
+// function ProfileScreen() {
+//     return (
+//         <View style={styles.centered}>
+//             <Text>Perfil</Text>
+//         </View>
+//     );
+// }
 
 // Loading screen
 function LoadingScreen() {

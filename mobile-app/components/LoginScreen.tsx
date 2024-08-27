@@ -68,6 +68,7 @@ const LoginScreen = ({ setAuthenticated }) => {
                     <View style={styles.formContainer}>
                         <Image source={require('../assets/logo.png')} style={styles.logo} />
                         <Text style={styles.title}>Merenda SP</Text>
+                        <Text style={styles.subtitle}>Plataforma Estadual de Controle de Merenda Escolar</Text>
 
                         <TextInput
                             style={styles.input}
@@ -86,7 +87,7 @@ const LoginScreen = ({ setAuthenticated }) => {
                         />
 
                         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                            <Ionicons name="log-in-outline" size={20} color="white" />
+                            {/*<Ionicons name="log-in-outline" size={20} color="white" />*/}
                             <Text style={styles.loginButtonText}>Entrar</Text>
                         </TouchableOpacity>
 
@@ -144,13 +145,22 @@ const styles = StyleSheet.create({
     logo: {
         width: 150,
         height: 150,
-        marginBottom: 20,
+        marginBottom: 5,
+        marginTop: -30
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
+        marginBottom: 5,
         textAlign: 'center',
+        color: '#00b33c'
+    },
+    subtitle: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        marginBottom: 30,
+        textAlign: 'center',
+        color: '#b3b3b3'
     },
     input: {
         width: '100%',
@@ -173,8 +183,8 @@ const styles = StyleSheet.create({
     },
     loginButtonText: {
         color: '#fff',
-        marginLeft: 10,
         fontSize: 18,
+        fontWeight: 'bold',
     },
     skipButton: {
         marginTop: 10,

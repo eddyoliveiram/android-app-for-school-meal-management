@@ -22,7 +22,7 @@ const MainTabs = ({ handleLogout }) => (
                 tabBarActiveTintColor: '#000',
                 tabBarInactiveTintColor: '#888',
                 tabBarStyle: {
-                    backgroundColor: '#f2f2f2', // Cor do fundo da barra de navegação
+                    backgroundColor: '#fff', // Cor do fundo da barra de navegação
                     borderTopWidth: 0, // Remove a borda superior
                     elevation: 0, // Remove a sombra (Android)
                     shadowOpacity: 0, // Remove a sombra (iOS)
@@ -31,6 +31,7 @@ const MainTabs = ({ handleLogout }) => (
                 headerStyle: { backgroundColor: '#f2f2f2' },
                 headerTintColor: '#000',
                 headerTitleAlign: 'center',
+                headerShown: false,
             })}
         >
             <Tab.Screen name="Home">
