@@ -1,8 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import HomeScreen from './HomeScreen';
-import ProfileScreen from './ProfileScreen';
+import ResponsavelScreen from './ResponsavelScreen';
+import AdminScreen from './AdminScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -12,10 +12,10 @@ const MainTabs = ({ handleLogout }) => (
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
-                    if (route.name === 'Home') {
-                        iconName = focused ? 'home' : 'home-outline';
-                    } else if (route.name === 'Profile') {
+                    if (route.name === 'Responsável') {
                         iconName = focused ? 'person' : 'person-outline';
+                    } else if (route.name === 'Admin') {
+                        iconName = focused ? 'person-add' : 'person-add-outline';
                     }
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
@@ -34,10 +34,10 @@ const MainTabs = ({ handleLogout }) => (
                 headerShown: false,
             })}
         >
-            <Tab.Screen name="Home">
-                {() => <HomeScreen handleLogout={handleLogout} />}
+            <Tab.Screen name="Responsável" >
+                {() => <ResponsavelScreen handleLogout={handleLogout} />}
             </Tab.Screen>
-            <Tab.Screen name="Profile" component={ProfileScreen} />
+            <Tab.Screen name="Admin" component={AdminScreen} />
         </Tab.Navigator>
     </>
 );
