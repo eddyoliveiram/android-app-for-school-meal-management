@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons'; // Ícones de lupa
 
 const { width } = Dimensions.get('window'); // Obtém a largura da tela
 
-function ResponsavelScreen({ handleLogout }) {
+function ResponsavelScreen({ handleLogout, navigation }) {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -26,9 +26,9 @@ function ResponsavelScreen({ handleLogout }) {
 
                 <View style={styles.cardsContainer}>
 
-                    <TouchableOpacity style={styles.card}>
+                    <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('CadastroRefeicao')}>
                         <Ionicons name="fast-food-outline" size={60} color="#008000" />
-                        <Text style={styles.cardLabel}>Refeição Diária</Text>
+                        <Text style={styles.cardLabel}>Refeições Diárias</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.card}>
