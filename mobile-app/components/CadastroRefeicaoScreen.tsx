@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
@@ -48,7 +48,6 @@ function CadastroRefeicaoScreen({ navigation }) {
 
                         const result = await ImagePicker.launchCameraAsync({
                             allowsEditing: true,
-                            aspect: [1, 1], // Proporção ajustada para 1:1 (quadrado)
                             quality: 1,
                         });
 
@@ -69,7 +68,6 @@ function CadastroRefeicaoScreen({ navigation }) {
                         const result = await ImagePicker.launchImageLibraryAsync({
                             mediaTypes: ImagePicker.MediaTypeOptions.Images,
                             allowsEditing: true,
-                            aspect: [1, 1], // Proporção ajustada para 1:1 (quadrado)
                             quality: 1,
                         });
 
@@ -85,75 +83,81 @@ function CadastroRefeicaoScreen({ navigation }) {
     };
 
     return (
-        <View style={styles.container}>
-            {/* Header com ícone de voltar e título */}
-            <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                    <Ionicons name="arrow-back-outline" size={24} color="#000" />
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20} // Ajuste este valor conforme necessário
+        >
+            <ScrollView contentContainerStyle={styles.container}>
+                {/* Header com ícone de voltar e título */}
+                <View style={styles.header}>
+                    <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                        <Ionicons name="arrow-back-outline" size={24} color="#000" />
+                    </TouchableOpacity>
+                    <Text style={styles.headerTitle}>Cadastro de Refeição</Text>
+                </View>
+
+                <Text style={styles.label}>Data</Text>
+                <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Selecione a data"
+                        value={date.toLocaleDateString()}
+                        editable={false}
+                    />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Cadastro de Refeição</Text>
-            </View>
+                {showDatePicker && (
+                    <DateTimePicker
+                        value={date}
+                        mode="date"
+                        display="default"
+                        onChange={handleDateChange}
+                    />
+                )}
 
-            <Text style={styles.label}>Data</Text>
-            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                <Text style={styles.label}>Tipo de Refeição</Text>
+                <View style={styles.pickerContainer}>
+                    <Picker
+                        selectedValue={mealType}
+                        style={styles.picker}
+                        onValueChange={(itemValue) => setMealType(itemValue)}
+                    >
+                        <Picker.Item label="Selecione o tipo" value="" style={styles.pickerItem} />
+                        <Picker.Item label="Café da Manhã" value="breakfast" style={styles.pickerItem} />
+                        <Picker.Item label="Almoço" value="lunch" style={styles.pickerItem} />
+                        <Picker.Item label="Jantar" value="dinner" style={styles.pickerItem} />
+                    </Picker>
+                </View>
+
+                <Text style={styles.label}>Foto</Text>
+                <TouchableOpacity style={styles.photoButton} onPress={openCameraOrGallery}>
+                    <Ionicons name="camera-outline" size={24} color="#008000" style={styles.icon} />
+                    <Text style={styles.photoButtonText}>Tirar Foto ou Escolher da Galeria</Text>
+                </TouchableOpacity>
+                {photo && <Image source={{ uri: photo }} style={styles.photo} resizeMode="contain" />}
+
+                <Text style={styles.label}>Descrição</Text>
                 <TextInput
-                    style={styles.input}
-                    placeholder="Selecione a data"
-                    value={date.toLocaleDateString()}
-                    editable={false}
+                    style={[styles.textArea, styles.inputText]}
+                    placeholder=""
+                    placeholderTextColor="#008000"
+                    value={description}
+                    onChangeText={setDescription}
+                    multiline={true}
+                    numberOfLines={4}
                 />
-            </TouchableOpacity>
-            {showDatePicker && (
-                <DateTimePicker
-                    value={date}
-                    mode="date"
-                    display="default"
-                    onChange={handleDateChange}
-                />
-            )}
 
-            <Text style={styles.label}>Tipo de Refeição</Text>
-            <View style={styles.pickerContainer}>
-                <Picker
-                    selectedValue={mealType}
-                    style={styles.picker}
-                    onValueChange={(itemValue) => setMealType(itemValue)}
-                >
-                    <Picker.Item label="Selecione o tipo" value="" />
-                    <Picker.Item label="Café da Manhã" value="breakfast" />
-                    <Picker.Item label="Almoço" value="lunch" />
-                    <Picker.Item label="Jantar" value="dinner" />
-                </Picker>
-            </View>
-
-            <Text style={styles.label}>Foto</Text>
-            <TouchableOpacity style={styles.photoButton} onPress={openCameraOrGallery}>
-                <Ionicons name="camera-outline" size={24} color="#008000" style={styles.icon} />
-                <Text style={styles.photoButtonText}>Tirar Foto ou Escolher da Galeria</Text>
-            </TouchableOpacity>
-            {photo && <Image source={{ uri: photo }} style={styles.photo} />}
-
-            <Text style={styles.label}>Descrição</Text>
-            <TextInput
-                style={[styles.textArea, styles.inputText]}
-                placeholder=""
-                placeholderTextColor="#008000"
-                value={description}
-                onChangeText={setDescription}
-                multiline={true}
-                numberOfLines={4}
-            />
-
-            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.saveButtonText}>Salvar</Text>
-            </TouchableOpacity>
-        </View>
+                <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                    <Text style={styles.saveButtonText}>Salvar</Text>
+                </TouchableOpacity>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         backgroundColor: '#fff',
         paddingHorizontal: 20,
         paddingTop: 60,
@@ -178,27 +182,32 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     input: {
-        height: 40,
-        borderColor: '#008000',
-        borderWidth: 1,
+        width: '100%',
+        height: 50,
+        backgroundColor: '#f0f0f0', // Cor de fundo cinza claro
         borderRadius: 5,
-        marginBottom: 20,
         paddingHorizontal: 10,
-        justifyContent: 'center',
+        marginBottom: 15,
         fontWeight: 'bold',
-        color: '#008000',
+        color: '#000'
     },
     pickerContainer: {
         borderColor: '#008000',
-        borderWidth: 1,
-        borderRadius: 5,
+        // borderWidth: 1,
+        borderRadius: 100,
         marginBottom: 20,
+        fontWeight: 'bold',
     },
     picker: {
         height: 50,
         width: '100%',
         fontWeight: 'bold',
-        color: '#008000',
+        // color: '#008000',
+        backgroundColor: '#f0f0f0',
+    },
+    pickerItem: {
+        // fontSize: 50,
+        fontWeight: 'bold',
     },
     photoButton: {
         backgroundColor: '#f2f2f2',
@@ -216,25 +225,25 @@ const styles = StyleSheet.create({
         marginLeft: 10, // Espaço entre o ícone e o texto
     },
     photo: {
-        width: 200,
-        height: 200, // Ajuste para quadrado
+        width: '100%',
+        height: 200, // Altura ajustada
         borderRadius: 10,
         marginBottom: 20,
         alignSelf: 'center',
     },
     textArea: {
         height: 100,
-        borderColor: '#008000',
-        borderWidth: 1,
+        backgroundColor: '#f0f0f0', // Cor de fundo cinza claro
         borderRadius: 5,
         marginBottom: 20,
         paddingHorizontal: 10,
         paddingVertical: 10,
         textAlignVertical: 'top',
+
     },
     inputText: {
         fontWeight: 'bold',
-        color: '#008000',
+        // color: '#008000',
     },
     saveButton: {
         backgroundColor: '#008000', // Botão verde
@@ -252,7 +261,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10, // Espaço à esquerda da seta de voltar
     },
     icon: {
-        marginRight: 10, // Espaço à direita do ícone
+        marginRight: 0, // Espaço à direita do ícone
     },
 });
 
