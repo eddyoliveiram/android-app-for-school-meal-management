@@ -1,143 +1,160 @@
 import React from 'react';
-import { View, Text, StyleSheet, StatusBar, TouchableOpacity, Dimensions, Image } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, TouchableOpacity, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Ícones de lupa
 
 const { width } = Dimensions.get('window'); // Obtém a largura da tela
 
 function ResponsavelScreen({ handleLogout, navigation }) {
+    const menuItems = [
+        {
+            title: 'Refeições Diárias',
+            description: "Registre as refeições do dia",
+            icon: 'fast-food-outline',
+            color: '#008000', // Orange color
+            screen: 'CadastroRefeicao'
+        },
+        {
+            title: 'Controle de Estoque',
+            description: 'Gerencie o inventário de ingredientes',
+            icon: 'cube-outline',
+            color: '#800080', // Purple color
+            screen: null // Add the screen name if you have a dedicated screen for Stock Control
+        },
+        {
+            title: 'Avisos',
+            description: 'Notícias ou comunicados importantes',
+            icon: 'alert-circle-outline',
+            color: '#ff9933', // Teal color
+            screen: null // Add the screen name if you have a dedicated screen for Notices
+        }
+    ];
+
     return (
         <View style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
-            {/* Header com logo, saudação e botão de logout */}
+            {/* Header com saudação e botão de logout */}
             <View style={styles.header}>
-                <Text style={styles.greeting}>Olá, John Doe.</Text>
+                <View style={styles.userInfo}>
+                    <Ionicons name="person-circle-outline" size={42} color="#4B5563" />
+                    <Text style={styles.userName}>Olá, John Doe.</Text>
+                </View>
 
-                {/* Botão de Logout */}
                 <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-                    <Ionicons name="log-out-outline" size={24} color="#00b33c" />
+                    <Ionicons name="log-out-outline" size={16} color="#000" />
                     <Text style={styles.logoutText}>Sair</Text>
                 </TouchableOpacity>
             </View>
 
-            {/* Card maior de Controle */}
-            <View style={styles.controlContainer}>
-                <Text style={styles.controlLabel}>Controle</Text>
+            {/* Main Content */}
+            <View style={styles.main}>
+                {/*<Text style={styles.mainTitle}>School Meal Manager</Text>*/}
 
-                <View style={styles.cardsContainer}>
-
-                    <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('CadastroRefeicao')}>
-                        <Ionicons name="fast-food-outline" size={60} color="#008000" />
-                        <Text style={styles.cardLabel}>Refeições Diárias</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.card}>
-                        <Ionicons name="cube-outline" size={60} color="#008000" />
-                        <Text style={styles.cardLabel}>Estoque de Alimentos</Text>
-                    </TouchableOpacity>
-
-                </View>
-            </View>
-
-            {/* Card de Aviso */}
-            <View style={styles.controlContainer}>
-                <Text style={styles.controlLabelYellow}>Avisos</Text>
-
-                <View style={styles.cardsContainer}>
-                    <TouchableOpacity style={styles.card100}>
-                        <Ionicons name="alert-circle-outline" size={60} color="#cc8400" />
-                        <Text style={styles.cardLabel100}>Nenhum aviso importante até o momento.</Text>
-                    </TouchableOpacity>
+                <View style={styles.grid}>
+                    {menuItems.map((item, index) => (
+                        <TouchableOpacity
+                            key={index}
+                            style={[styles.card, { backgroundColor: item.color + '20' }]} // Light background color
+                            onPress={() => item.screen && navigation.navigate(item.screen)}
+                        >
+                            <View style={[styles.iconContainer, { backgroundColor: item.color + '30' }]}>
+                                <Ionicons name={item.icon} size={32} color={item.color} />
+                            </View>
+                            <View style={styles.cardContent}>
+                                <Text style={styles.cardTitle}>{item.title}</Text>
+                                <Text style={styles.cardDescription}>{item.description}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    ))}
                 </View>
             </View>
         </View>
     );
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
         paddingHorizontal: 20,
-        paddingTop: 60,
+        paddingTop: 50,
     },
     header: {
         flexDirection: 'row',
-        alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: 30,
+        alignItems: 'center',
+        marginBottom: 20,
     },
-    greeting: {
+    userInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    userName: {
         fontSize: 22,
         fontWeight: 'bold',
-        color: '#008000',
-        flex: 1,
+        color: '#1F2937',
+        marginLeft: 8,
     },
     logoutButton: {
         flexDirection: 'row',
         alignItems: 'center',
+        backgroundColor: '#fff',
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 50,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 6,
     },
     logoutText: {
-        color: '#00b33c',
-        fontSize: 16,
+        color: '#000',
+        fontSize: 14,
         marginLeft: 5,
     },
-    controlContainer: {
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 15,  // Reduzi o padding para deixar os elementos mais próximos
-        marginBottom: 10,  // Reduzi o marginBottom para compactar o espaço entre os containers
+    main: {
+        flex: 1,
+        alignItems: 'center',
     },
-    controlLabel: {
-        fontSize: 16,
+    mainTitle: {
+        fontSize: 24,
         fontWeight: 'bold',
-        color: '#008000',
-        marginBottom: 10,  // Reduzi o marginBottom para diminuir o espaço entre o título e os cards
-        textAlign: 'left',
+        color: '#1F2937',
+        marginBottom: 20,
     },
-    controlLabelYellow: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#cc8400',
-        marginBottom: 10,  // Reduzi o marginBottom para diminuir o espaço entre o título e os cards
-        textAlign: 'left',
-    },
-    cardsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',  // Usei 'space-around' para reduzir o espaço entre os cards duplos
-        backgroundColor: '#fff',
+    grid: {
+        width: '100%',
+        maxWidth: 450, // Aumentei o tamanho máximo dos cards
     },
     card: {
-        backgroundColor: '#e6ffe6',
-        justifyContent: 'center',
+        flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: 10,
-        width: (width / 2) - 50,  // Reduzi a largura dos cards duplos para diminuir o espaço entre eles
-        height: (width / 2) - 50,
+        backgroundColor: '#fff',
+        padding: 20, // Aumentei o padding para dar mais espaço interno ao card
+        // borderRadius: 15, // Aumentei o raio do border para um visual mais suave
+        marginBottom: 15, // Aumentei o espaço entre os cards
+
+        // elevation: 8, // Aumentei a elevação para melhorar a sombra
     },
-    cardLabel: {
-        marginTop: 10,
-        fontSize: 14,
+    iconContainer: {
+        padding: 12,
+        borderRadius: 50,
+        marginRight: 16, // Aumentei o espaço entre o ícone e o texto
+    },
+    cardContent: {
+        flex: 1,
+    },
+    cardTitle: {
+        fontSize: 20, // Aumentei o tamanho da fonte
         fontWeight: 'bold',
-        color: '#008000',
-        paddingHorizontal:1
+        color: '#1F2937',
     },
-    card100: {
-        backgroundColor: '#fff5cc', // Fundo amarelo claro
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-        width: width/2 + 110 ,  // Ajuste a largura para considerar o padding horizontal
-        padding: 20,
-        marginVertical: 5,
-    },
-    cardLabel100: {
-        marginTop: 10,
-        fontSize: 14,
-        fontWeight: 'bold',
-        color: '#cc8400', // Texto em amarelo escuro
-        textAlign: 'center',
+    cardDescription: {
+        fontSize: 16, // Aumentei o tamanho da fonte
+        // color: '#6B7280',
+        marginTop: 4,
     },
 });
 
-
-        export default ResponsavelScreen;
+export default ResponsavelScreen;

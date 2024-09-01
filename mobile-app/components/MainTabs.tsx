@@ -41,16 +41,13 @@ const MainTabs = ({ handleLogout }) => (
             tabBarActiveTintColor: '#000',
             tabBarInactiveTintColor: '#888',
             tabBarStyle: {
-                backgroundColor: '#fff',
-                borderTopWidth: 0,
-                elevation: 0,
-                shadowOpacity: 0,
-                height: 50,
+                display:'none'
             },
             headerStyle: { backgroundColor: '#f2f2f2' },
             headerTintColor: '#000',
             headerTitleAlign: 'center',
             headerShown: false,
+
         })}
     >
         <Tab.Screen name="Responsável">
