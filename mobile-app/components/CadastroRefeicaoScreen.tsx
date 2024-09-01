@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet, TextInput, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Ionicons } from '@expo/vector-icons'; // Importando o Ionicons
 import RefeicaoModal from './RefeicaoModal';
 
 function CadastroRefeicaoScreen({ navigation }) {
@@ -45,9 +46,18 @@ function CadastroRefeicaoScreen({ navigation }) {
 
     return (
         <View style={styles.container}>
+            <View style={styles.headerRow}>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back-outline" size={24} color="#000" />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Refeições diárias</Text>
+            </View>
+
             <TouchableOpacity style={styles.openModalButton} onPress={() => setModalVisible(true)}>
-                <Text style={styles.openModalButtonText}>Cadastrar Nova Refeição</Text>
+                <Ionicons name="add-circle-outline" size={24} color="#fff" style={styles.iconStyle} />
+                <Text style={styles.openModalButtonText}>Cadastrar</Text>
             </TouchableOpacity>
+
 
             <Text style={styles.label}>Data</Text>
             <TouchableOpacity onPress={() => setShowDatePicker(true)}>
@@ -76,6 +86,14 @@ function CadastroRefeicaoScreen({ navigation }) {
                             <Text style={styles.recordDescription}>{record.description}</Text>
                         </View>
                         <Image source={{ uri: record.imageUrl }} style={styles.recordImage} />
+                        <View style={styles.buttonGroup}>
+                            <TouchableOpacity style={styles.actionButton}>
+                                <Ionicons name="create-outline" size={24} color="#008000" />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.actionButton}>
+                                <Ionicons name="trash-outline" size={24} color="#FF0000" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 ))}
             </ScrollView>
@@ -94,15 +112,38 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         backgroundColor: '#fff',
         paddingHorizontal: 20,
-        paddingTop: 60,
+        paddingTop: 40,
         flex: 1,
     },
+    headerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    backButton: {
+        backgroundColor: '#fff',
+        padding: 10,
+        borderRadius: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 10,
+    },
+    headerTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#000',
+    },
     openModalButton: {
-        backgroundColor: '#008000',
+        backgroundColor: '#00b33c',
         padding: 15,
         borderRadius: 5,
         alignItems: 'center',
+        flexDirection: 'row', // Alinha o ícone e o texto na mesma linha
+        justifyContent: 'center',
         marginBottom: 20,
+    },
+    iconStyle: {
+        marginRight: 8, // Espaçamento entre o ícone e o texto
     },
     openModalButtonText: {
         color: '#fff',
@@ -127,7 +168,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
     recordItem: {
-        backgroundColor: '#e6ffe6',
+        backgroundColor: '#f2f2f2',
         padding: 15,
         borderRadius: 10,
         marginBottom: 15,
@@ -140,7 +181,7 @@ const styles = StyleSheet.create({
     recordText: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#008000',
+        color: '#00b33c',
     },
     recordDescription: {
         fontSize: 14,
@@ -150,6 +191,13 @@ const styles = StyleSheet.create({
         width: 80,
         height: 80,
         borderRadius: 10,
+        marginLeft: 10,
+    },
+    buttonGroup: {
+        flexDirection: 'row',
+        marginLeft: 10,
+    },
+    actionButton: {
         marginLeft: 10,
     },
 });

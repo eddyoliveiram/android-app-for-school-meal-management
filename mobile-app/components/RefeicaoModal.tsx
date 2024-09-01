@@ -128,7 +128,7 @@ const RefeicaoModal = ({ visible, onClose, onSave }) => {
 
                         <Text style={styles.label}>Foto</Text>
                         <TouchableOpacity style={styles.photoButton} onPress={openCameraOrGallery}>
-                            <Ionicons name="camera-outline" size={24} color="#008000" style={styles.icon} />
+                            <Ionicons name="camera-outline" size={24} color="#00b33c" style={styles.icon} />
                             <Text style={styles.photoButtonText}>Tirar Foto ou Escolher da Galeria</Text>
                         </TouchableOpacity>
                         {photo && <Image source={{ uri: photo }} style={styles.photo} resizeMode="contain" />}
@@ -137,7 +137,7 @@ const RefeicaoModal = ({ visible, onClose, onSave }) => {
                         <TextInput
                             style={[styles.textArea, styles.inputText]}
                             placeholder=""
-                            placeholderTextColor="#008000"
+                            placeholderTextColor="#00b33c"
                             value={description}
                             onChangeText={setDescription}
                             multiline={true}
@@ -179,13 +179,13 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#008000',
+        color: '#000',
         marginLeft: 10,
     },
     label: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#008000',
+        color: '#00b33c',
         marginBottom: 5,
     },
     input: {
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     photoButtonText: {
-        color: '#008000',
+        color: '#00b33c',
         fontSize: 16,
         fontWeight: 'bold',
         marginLeft: 10,
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     saveButton: {
-        backgroundColor: '#008000',
+        backgroundColor: '#00b33c',
         padding: 15,
         borderRadius: 5,
         alignItems: 'center',

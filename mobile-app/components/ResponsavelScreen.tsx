@@ -10,7 +10,7 @@ function ResponsavelScreen({ handleLogout, navigation }) {
             title: 'Refeições Diárias',
             description: "Registre as refeições do dia",
             icon: 'fast-food-outline',
-            color: '#008000', // Orange color
+            color: '#00b33c', // Orange color
             screen: 'CadastroRefeicao'
         },
         {
@@ -102,15 +102,10 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 16,
         borderRadius: 50,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 6,
     },
     logoutText: {
         color: '#000',
-        fontSize: 14,
+        fontSize: 16,
         marginLeft: 5,
     },
     main: {
